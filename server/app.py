@@ -23,7 +23,7 @@ def handle_request():
         with open(filename, 'wb') as f:     # storing image file into the server
             f.write(image)
         
-        image = Image.open('yolov5-master/image.jpg')       # opening image for confimation that image capture by phones camera has been delivered to server
+        #image = Image.open('yolov5-master/image.jpg')       # opening image for confimation that image capture by phones camera has been delivered to server
 
         # executing terminal command using os library for yolo model processing on the image taken and storin results 
         os.system("cd yolov5-master && python detect.py --weights yolov5s.pt --img 640 --conf 0.25 --source image.jpg --save-txt --save-conf")
@@ -34,18 +34,26 @@ def handle_request():
         # most recent experiment which was done by yolo modle processing
         exp = l2[-1]
 
+        # declaring path where image.txt exist which contains object id
         path = "yolov5-master/runs/detect/" + exp + "/labels/image.txt"
-        # print(path)
-        result = ""
+
+        boxes = "yolov5-master/runs/detect/" + exp + "/image.jpg"
+        image = Image.open(boxes)       # opening the image which contains bounding boxes of the object detected by the yolo modle processing
+
+        result = 0
+        # in case there is no object detected by yolo then it will not generate image.txt
         if os.path.exists(path):
             file = open(path, 'r') 
             lines = file.readlines()
-            ids = []
-            for x in lines:
-                ids.append(int(x.split(" ")[0]))
 
-            for x in ids:
-                result = result +" "+ labels[x]
+            # ids = []
+            # for x in lines:
+            #     ids.append(int(x.split(" ")[0]))
+
+            # for x in ids:
+            #     result = result +" "+ labels[x]
+
+            result = len(lines)
             print(result)
         
         
