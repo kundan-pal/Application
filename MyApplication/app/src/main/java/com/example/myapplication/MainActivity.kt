@@ -74,7 +74,7 @@ class MainActivity : AppCompatActivity() {
 
 //        val url = "http://10.0.2.2:8080"
 
-        val url = "https://dcb3-2409-4073-119-f338-fc0b-5282-6515-e204.in.ngrok.io"
+        val url = "https://7832-104-28-193-172.in.ngrok.io/"
 
 
         val imageView = findViewById<ImageView>(R.id.imageView)
