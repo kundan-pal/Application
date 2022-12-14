@@ -1,15 +1,16 @@
 package com.example.myapplication
 
 import android.annotation.SuppressLint
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.graphics.drawable.BitmapDrawable
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Bundle
 import android.provider.MediaStore
 import android.util.Base64
-import android.util.Log
 import android.widget.Button
 import android.widget.ImageView
 import android.widget.TextView
@@ -61,8 +62,12 @@ class MainActivity : AppCompatActivity() {
 //        val url = "https://jsonplaceholder.typicode.com/todos/1"
 
         // declaring url variable which contains the url where we will send the post request.
-        val url = "https://59ea-104-28-219-119.in.ngrok.io"
+        val url = "https://c3e1-104-28-251-119.in.ngrok.io"
 
+        if(!checkForInternet(this)){
+            Toast.makeText(this, "Please connect to the Internet", Toast.LENGTH_SHORT).show()
+            println("Internet is not connected")
+        }
 
         // fetching the image taken from the imageview
         val imageView = findViewById<ImageView>(R.id.imageView)
@@ -94,17 +99,16 @@ class MainActivity : AppCompatActivity() {
         val client = OkHttpClient()
 
         // we can not execute http request in the main thread so we need to use enqueue
-
-        var body = "$"
         val textView = findViewById<TextView>(R.id.textView)
         println("Begin of http request")
         client.newCall(request).enqueue(object : Callback {
             override fun onResponse(call: Call, response: Response) {
                 println("trying to fetch json object string from the url")
-                body = response.body?.string().toString()
+                val body = response.body?.string().toString()
                 textView.text = body
                 println(body)
             }
+            @SuppressLint("SetTextI18n")
             override fun onFailure(call: Call, e: IOException) {
                 textView.text = "Please Retry!"
                 println("Failed to execute request")
@@ -112,6 +116,20 @@ class MainActivity : AppCompatActivity() {
         })
         println("End of the function")
     }
+
+    // function to check if the internet is connected or not
+    private fun checkForInternet(context: Context): Boolean {
+        // register activity with the connectivity manager service
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+            val network = connectivityManager.activeNetwork ?: return false
+            val activeNetwork = connectivityManager.getNetworkCapabilities(network) ?: return false
+            return when {
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> true
+                activeNetwork.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> true
+                else -> false
+            }
+    }
+
 
     // optional function to make camera button enable if the permission is granted
     // because if permission is not granted and we try to start camera then app will crash
@@ -128,6 +146,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     // after image is taken we display it in the imageview variable and make http request
+    @Deprecated("Deprecated in Java")
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if(requestCode == REQUEST_CODE && resultCode == RESULT_OK){     //means user had successfully taken picture from camera
             val imageTaken = data?.extras?.get("data") as Bitmap        // image we take comes as bitmap

@@ -21,8 +21,8 @@
         android:layout_above="@+id/camera_Button"
         android:layout_centerHorizontal="true"
         android:layout_marginVertical="100dp"
+        android:rotation="0"
         android:layout_marginBottom="99dp"
-        android:rotation="90"
 
         app:srcCompat="@drawable/ic_launcher_background" />
 

@@ -46,12 +46,13 @@ def handle_request():
             file = open(path, 'r') 
             lines = file.readlines()
 
-            # ids = []
-            # for x in lines:
-            #     ids.append(int(x.split(" ")[0]))
+            ids = []
+            for x in lines:
+                ids.append(int(x.split(" ")[0]))
 
-            # for x in ids:
-            #     result = result +" "+ labels[x]
+            for x in ids:
+                print(labels[x])
+                # result = result +" "+ labels[x]
 
             result = len(lines)
             print(result)
@@ -59,7 +60,7 @@ def handle_request():
         
         print(len(data))
         # print(result) 
-        image.show()
+        # image.show()
         return jsonify(result)
 
 
